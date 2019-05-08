@@ -168,11 +168,11 @@ body {
   font-family: "Montserrat", sans-serif;
   background: url("images/YYZ.png") no-repeat right 10% top 8% / 200px,
     url("images/squiggle.png") no-repeat right 35% top 9% / 50px,
-    url("images/oval.png") no-repeat right 30% top 15% / 45px,
+    /*url("images/oval.png") no-repeat right 30% top 15% / 45px,*/
     url("images/cactus.png") no-repeat left 15% top 46% / 50px,
-    url("images/Drank.png") no-repeat right 12% top 48% / 50px,
+    url("images/drank.png") no-repeat right 12% top 48% / 50px,
     url("images/pup.png") no-repeat right 30% top 59%/ 90px,
-    url("images/Squaggle.png") no-repeat left 22% top 62% / 60px,
+    url("images/squaggle.png") no-repeat left 22% top 62% / 60px,
     url("images/squaggle2.png") no-repeat left 15% top 70% / 60px,
     linear-gradient(10deg, #04d8f5 1%, #4437fd 99%);
   color: #ffebde;
