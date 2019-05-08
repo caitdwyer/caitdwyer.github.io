@@ -1,0 +1,398 @@
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+nav,
+section,
+summary {
+  display: block;
+}
+audio,
+canvas,
+video {
+  display: inline-block;
+}
+audio:not([controls]) {
+  display: none;
+  height: 0;
+}
+[hidden] {
+  display: none;
+}
+html {
+  font-family: sans-serif;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+a:focus {
+  outline: thin dotted;
+}
+a:active,
+a:hover {
+  outline: 0;
+}
+h1 {
+  font-size: 2em;
+}
+abbr[title] {
+  border-bottom: 1px dotted;
+}
+b,
+strong {
+  font-weight: 700;
+}
+dfn {
+  font-style: italic;
+}
+mark {
+  background: #ff0;
+  color: #000;
+}
+code,
+kbd,
+pre,
+samp {
+  font-family: monospace, serif;
+  font-size: 1em;
+}
+pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+q {
+  quotes: \201c \201d \2018 \2019;
+}
+small {
+  font-size: 80%;
+}
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+sup {
+  top: -0.5em;
+}
+sub {
+  bottom: -0.25em;
+}
+img {
+  border: 0;
+}
+svg:not(:root) {
+  overflow: hidden;
+}
+fieldset {
+  border: 1px solid silver;
+  margin: 0 2px;
+  padding: 0.35em 0.625em 0.75em;
+}
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: 100%;
+  margin: 0;
+}
+button,
+input {
+  line-height: normal;
+}
+button,html input[type=button],/* 1 */
+input[type=reset],input[type=submit] {
+  -webkit-appearance: button;
+  cursor: pointer;
+}
+button[disabled],
+input[disabled] {
+  cursor: default;
+}
+input[type="checkbox"],
+input[type="radio"] {
+  box-sizing: border-box;
+  padding: 0;
+}
+input[type="search"] {
+  -webkit-appearance: textfield;
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
+}
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+textarea {
+  overflow: auto;
+  vertical-align: top;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+body,
+figure {
+  margin: 0;
+}
+legend,
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+.clearfix:after {
+  visibility: hidden;
+  display: block;
+  font-size: 0;
+  content: " ";
+  clear: both;
+  height: 0;
+}
+
+* {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+body {
+  transition: all 0.5s;
+  min-height: 100vh;
+  font-family: "Montserrat", sans-serif;
+  background: url("images/YYZ.png") no-repeat right 10% top 8% / 200px,
+    url("images/squiggle.png") no-repeat right 35% top 9% / 50px,
+    url("images/oval.png") no-repeat right 30% top 15% / 45px,
+    url("images/cactus.png") no-repeat left 15% top 46% / 50px,
+    url("images/Drank.png") no-repeat right 12% top 48% / 50px,
+    url("images/pup.png") no-repeat right 30% top 59%/ 90px,
+    url("images/Squaggle.png") no-repeat left 22% top 62% / 60px,
+    url("images/squaggle2.png") no-repeat left 15% top 70% / 60px,
+    linear-gradient(10deg, #04d8f5 1%, #4437fd 99%);
+  color: #ffebde;
+}
+a {
+  display: inline-block;
+}
+
+.wrapper {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 75px 20px;
+}
+
+h1 svg {
+  width: 200px;
+}
+
+span,
+a {
+  color: #39fbec;
+}
+
+p {
+  font-size: 33px;
+  font-weight: 700;
+  letter-spacing: 2.7px;
+  line-height: 2;
+}
+.rays,
+.contact {
+  text-align: center;
+}
+
+.rays img {
+  max-width: 40%;
+}
+
+.squiggles {
+  padding-top: 150px;
+  transform: scale(1.1);
+}
+
+.squiggles img {
+  max-width: 100%;
+}
+
+.button {
+  color: #ffebde;
+  font-size: 23px;
+  border: 3px solid #ffebde;
+  letter-spacing: 2.16;
+  padding: 15px 30px;
+  box-shadow: inset 0 0 0 0 #ffebde;
+  transform: translateZ(0);
+  transition: box-shadow ease 1s;
+  position: relative;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.button:hover {
+  box-shadow: inset 500px 0 0 0 #ffebde;
+  transform: translateZ(0);
+}
+
+.button:before {
+  content: url(images/heart.svg);
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+}
+
+.button:hover:before {
+  opacity: 1;
+  transition: opacity 0.5s ease-in 0.5s;
+}
+
+.contact {
+  padding: 150px 0;
+}
+
+footer {
+  background: #4437fd;
+  padding: 30px 50px;
+}
+
+footer p {
+  font-size: 18px;
+  font-weight: 400;
+  margin-right: 20px;
+}
+
+footer > .flex-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 75px 0;
+}
+
+.flex-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.diamond {
+  width: 50px;
+  height: 50px;
+  display: inline-block;
+  margin: 20px;
+  background: #39fbec;
+  border-radius: 3px;
+  transform: rotate(315deg) translateZ(0);
+  text-align: center;
+}
+
+.diamond:hover {
+  transform: rotate(270deg) translateZ(0);
+}
+
+.diamond i {
+  color: #4437fd;
+  font-size: 23px;
+  position: relative;
+  top: 50%;
+  transform: translateZ(0) translateY(-50%) rotate(-315deg);
+}
+
+.diamond:hover i {
+  transform: translateZ(0) translateY(-50%) rotate(-270deg);
+}
+
+.diamond,
+.diamond i {
+  transition: transform 0.5s, -webkit-transform 0.5s;
+}
+
+.social {
+  display: flex;
+  min-height: 25px;
+  max-width: 100%;
+  align-items: center;
+  flex-basis: auto;
+}
+
+@media (max-width: 830px) {
+  body {
+    background: url("images/YYZ.png") no-repeat right 10% top 8% / 200px,
+      url("images/squiggle.png") no-repeat right 40% top 9% / 50px,
+      url("images/oval.png") no-repeat right 30% top 14% / 45px,
+      url("images/cactus.png") no-repeat left 15% top 46% / 50px,
+      url("images/Drank.png") no-repeat right 12% top 48% / 50px,
+      url("images/pup.png") no-repeat right 20% top 63%/ 90px,
+      url("images/Squaggle.png") no-repeat left 15% top 64% / 60px,
+      url("images/squaggle2.png") no-repeat left 12% top 80% / 60px,
+      linear-gradient(10deg, #04d8f5 1%, #4437fd 99%);
+  }
+
+  .contact {
+    padding: 120px 0;
+  }
+
+  footer > .flex-container {
+    flex-direction: column;
+  }
+
+  .social {
+    flex-direction: column;
+  }
+
+  .wrapper {
+    padding: 75px 30px;
+  }
+
+  .squiggles {
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 600px) {
+  body {
+    background: url("images/YYZ.png") no-repeat right 10% top 8% / 150px,
+      url("images/squiggle.png") no-repeat right 45% top 9% / 30px,
+      url("images/oval.png") no-repeat right 30% top 12% / 30px,
+      url("images/cactus.png") no-repeat left 15% top 50% / 50px,
+      url("images/Drank.png") no-repeat right 12% top 48% / 50px,
+      url("images/pup.png") no-repeat right 20% top 63%/ 90px,
+      url("images/Squaggle.png") no-repeat left 15% top 60% / 60px,
+      url("images/squaggle2.png") no-repeat left 12% top 75% / 60px,
+      linear-gradient(10deg, #04d8f5 1%, #4437fd 99%);
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    background: url("images/YYZ.png") no-repeat right 10% top 8% / 150px,
+      url("images/squiggle.png") no-repeat right 13% top 13% / 30px,
+      url("images/oval.png") no-repeat right 23% top 12% / 30px,
+      url("images/cactus.png") no-repeat left 15% top 48% / 50px,
+      url("images/Drank.png") no-repeat right 12% top 49% / 50px,
+      url("images/pup.png") no-repeat right 20% top 60%/ 70px,
+      url("images/Squaggle.png") no-repeat left 15% top 62% / 40px,
+      url("images/squaggle2.png") no-repeat left 48% top 77% / 40px,
+      linear-gradient(10deg, #04d8f5 1%, #4437fd 99%);
+  }
+
+  p {
+    font-size: 20px;
+  }
+
+  .button {
+    font-size: 18px;
+  }
+
+  footer p {
+    font-size: 13px;
+  }
+
+  footer > .flex-container {
+    padding: 15px 0;
+  }
+}
