@@ -194,6 +194,7 @@ h1 svg {
 span,
 a {
   color: #39fbec;
+  text-decoration: none;
 }
 
 p {
