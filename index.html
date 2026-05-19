@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>The Adventure Begins</title>
+  <style id="game-styles">
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+      font-family: 'Courier New', monospace;
+    }
+    #game-container {
+      position: relative;
+      width: 800px;
+      height: 500px;
+    }
+    #bg-layer {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center bottom;
+      background-repeat: no-repeat;
+    }
+    #fade-overlay {
+      position: absolute;
+      inset: 0;
+      background: #000;
+      opacity: 0;
+      pointer-events: none;
+    }
+    #game-canvas {
+      display: block;
+      position: relative;
+      image-rendering: pixelated;
+      background: transparent;
+    }
+    /* Overlay UI panels — hidden by default */
+    #question-panel, #answer-panel {
+      display: none;
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.85);
+      border: 3px solid #f0c040;
+      border-radius: 12px;
+      padding: 20px;
+      color: #fff;
+    }
+    #question-text {
+      font-size: 18px;
+      margin-bottom: 16px;
+      color: #f0c040;
+    }
+    .choice-btn {
+      display: block;
+      width: 100%;
+      margin: 6px 0;
+      padding: 10px 14px;
+      background: #1a1a2e;
+      border: 2px solid #f0c040;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+      font-size: 15px;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.15s;
+      border-radius: 6px;
+    }
+    .choice-btn:hover { background: #f0c040; color: #000; }
+    #answer-text {
+      font-size: 15px;
+      line-height: 1.6;
+      margin-bottom: 16px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    #continue-btn {
+      display: block;
+      margin: 0 auto;
+      padding: 10px 30px;
+      background: #f0c040;
+      border: none;
+      color: #000;
+      font-family: 'Courier New', monospace;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #continue-btn:hover { background: #fff; }
+    #title-screen {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #0a0a0a;
+      color: #f0c040;
+      text-align: center;
+    }
+    #title-screen h1 { font-size: 36px; margin-bottom: 12px; letter-spacing: 4px; }
+    #title-screen p { font-size: 15px; color: #aaa; margin-bottom: 32px; }
+    #start-btn {
+      padding: 12px 36px;
+      background: #f0c040;
+      border: none;
+      color: #000;
+      font-family: 'Courier New', monospace;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      letter-spacing: 2px;
+    }
+    #start-btn:hover { background: #fff; }
+    #intro-screen {
+      display: none;
+      position: absolute;
+      inset: 0;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.78);
+    }
+    #intro-box {
+      background: rgba(10, 8, 0, 0.95);
+      border: 3px solid #f0c040;
+      border-radius: 14px;
+      padding: 36px 40px;
+      max-width: 560px;
+      width: 100%;
+      text-align: center;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+    }
+    #intro-box h2 {
+      color: #f0c040;
+      font-size: 22px;
+      letter-spacing: 3px;
+      margin-bottom: 20px;
+    }
+    #intro-box p {
+      font-size: 14px;
+      line-height: 1.7;
+      color: #ddd;
+      margin-bottom: 12px;
+    }
+    #intro-box .intro-steps {
+      list-style: none;
+      margin: 16px 0 24px;
+      padding: 0;
+      text-align: left;
+    }
+    #intro-box .intro-steps li {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #fff;
+      padding: 6px 0 6px 28px;
+      position: relative;
+    }
+    #intro-box .intro-steps li::before {
+      content: attr(data-icon);
+      position: absolute;
+      left: 0;
+    }
+    #intro-begin-btn {
+      padding: 11px 32px;
+      background: #f0c040;
+      border: none;
+      color: #000;
+      font-family: 'Courier New', monospace;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 6px;
+      letter-spacing: 1px;
+    }
+    #intro-begin-btn:hover { background: #fff; }
+    #final-panel {
+      display: none;
+      position: absolute;
+      inset: 0;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.6);
+    }
+    #final-box {
+      background: rgba(10, 8, 0, 0.95);
+      border: 3px solid #f0c040;
+      border-radius: 14px;
+      padding: 36px 40px;
+      max-width: 500px;
+      width: 100%;
+      text-align: center;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+    }
+    #final-box h2 {
+      color: #f0c040;
+      font-size: 26px;
+      letter-spacing: 3px;
+      margin-bottom: 14px;
+    }
+    #final-box p {
+      font-size: 15px;
+      line-height: 1.7;
+      color: #ddd;
+      margin-bottom: 24px;
+    }
+    #play-again-btn {
+      padding: 11px 32px;
+      background: #f0c040;
+      border: none;
+      color: #000;
+      font-family: 'Courier New', monospace;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 6px;
+      letter-spacing: 1px;
+    }
+    #play-again-btn:hover { background: #fff; }
+    #exit-btn {
+      display: block;
+      margin: 12px auto 0;
+      padding: 9px 32px;
+      background: transparent;
+      border: 2px solid rgba(255,255,255,0.3);
+      color: rgba(255,255,255,0.6);
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 6px;
+      letter-spacing: 1px;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    #exit-btn:hover { border-color: #fff; color: #fff; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeOut {
+      from { opacity: 1; transform: translateY(0); }
+      to   { opacity: 0; transform: translateY(-6px); }
+    }
+    .panel-enter {
+      animation: fadeIn 0.25s ease forwards;
+    }
+    .panel-exit {
+      animation: fadeOut 0.2s ease forwards;
+    }
+    @keyframes overlayFadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes overlayFadeOut {
+      from { opacity: 1; }
+      to   { opacity: 0; }
+    }
+    .overlay-enter {
+      animation: overlayFadeIn 0.3s ease forwards;
+    }
+    .overlay-exit {
+      animation: overlayFadeOut 0.2s ease forwards;
+    }
+    #scene-label {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      color: rgba(255,255,255,0.4);
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div id="game-container">
+    <div id="bg-layer"></div>
+    <div id="fade-overlay"></div>
+    <canvas id="game-canvas" width="800" height="500"></canvas>
+    <div id="title-screen">
+      <h1>THE ADVENTURE</h1>
+      <p>An interactive interview experience</p>
+      <button id="start-btn">PRESS START</button>
+    </div>
+    <div id="intro-screen">
+      <div id="intro-box">
+        <h2>HOW TO PLAY</h2>
+        <p>You are about to embark on an adventure through jungle, temple, cave, and beyond — but the path you take is up to you.</p>
+        <ul class="intro-steps">
+          <li data-icon="❓">Each screen presents a question about my approach to the role.</li>
+          <li data-icon="👆">Select the question you most want answered.</li>
+          <li data-icon="📖">My answer will appear as the explorer sets off for the next location — read at your own pace.</li>
+          <li data-icon="▶">Hit <strong>CONTINUE</strong> once you're ready to press on.</li>
+          <li data-icon="🏆">Reach the end to complete the adventure!</li>
+        </ul>
+        <button id="intro-begin-btn">BEGIN THE ADVENTURE ▶</button>
+      </div>
+    </div>
+    <div id="question-panel">
+      <div id="question-text"></div>
+      <div id="choices-container"></div>
+    </div>
+    <div id="answer-panel">
+      <div id="answer-text"></div>
+      <button id="continue-btn">CONTINUE ▶</button>
+    </div>
+    <div id="final-panel">
+      <div id="final-box">
+        <h2>ADVENTURE COMPLETE!</h2>
+        <p>Thanks for playing — I hope the journey gave you a good sense of how I think and what I'd bring to this role. Any questions?</p>
+        <button id="play-again-btn">PLAY AGAIN ↺</button>
+        <button id="exit-btn">Exit the Game</button>
+      </div>
+    </div>
+    <div id="scene-label"></div>
+  </div>
+
+  <script id="scene-data">
+    // ── EDIT YOUR CONTENT HERE ──────────────────────────────────────────────
+    const SCENES = [
+      {
+        id: "start",
+        environment: "jungle_path",
+        question: "PLACEHOLDER: What's your leadership philosophy?",
+        choices: [
+          {
+            text: "A) Servant leadership — I clear blockers for my team",
+            answer: "PLACEHOLDER ANSWER A: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Replace this with your real answer about servant leadership.",
+            nextSceneId: "temple-a"
+          },
+          {
+            text: "B) Lead by example — I stay hands-on with the work",
+            answer: "PLACEHOLDER ANSWER B: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Replace this with your real answer about leading by example.",
+            nextSceneId: "temple-b"
+          }
+        ]
+      },
+      {
+        id: "temple-a",
+        environment: "temple",
+        question: "PLACEHOLDER: How do you handle a missed deadline?",
+        choices: [
+          { text: "A) Re-scope immediately with stakeholders", answer: "PLACEHOLDER ANSWER A for temple-a choice 1. Replace with real answer.", nextSceneId: "cave-a" },
+          { text: "B) Identify root cause before escalating", answer: "PLACEHOLDER ANSWER B for temple-a choice 2. Replace with real answer.", nextSceneId: "cave-b" }
+        ]
+      },
+      {
+        id: "temple-b",
+        environment: "temple",
+        question: "PLACEHOLDER: How do you handle a missed deadline?",
+        choices: [
+          { text: "A) Re-scope immediately with stakeholders", answer: "PLACEHOLDER ANSWER A for temple-b choice 1. Replace with real answer.", nextSceneId: "cave-a" },
+          { text: "B) Identify root cause before escalating", answer: "PLACEHOLDER ANSWER B for temple-b choice 2. Replace with real answer.", nextSceneId: "cave-b" }
+        ]
+      },
+      {
+        id: "cave-a",
+        environment: "cave_entrance",
+        question: "PLACEHOLDER: Describe a time you drove cross-functional alignment.",
+        choices: [
+          { text: "A) Structured kick-offs and shared OKRs", answer: "PLACEHOLDER ANSWER A for cave-a. Replace with real answer.", nextSceneId: "underground-river-a" },
+          { text: "B) Informal relationship-building first", answer: "PLACEHOLDER ANSWER B for cave-a. Replace with real answer.", nextSceneId: "underground-river-b" }
+        ]
+      },
+      {
+        id: "cave-b",
+        environment: "cave",
+        question: "PLACEHOLDER: Describe a time you drove cross-functional alignment.",
+        choices: [
+          { text: "A) Structured kick-offs and shared OKRs", answer: "PLACEHOLDER ANSWER A for cave-b. Replace with real answer.", nextSceneId: "underground-river-a" },
+          { text: "B) Informal relationship-building first", answer: "PLACEHOLDER ANSWER B for cave-b. Replace with real answer.", nextSceneId: "underground-river-b" }
+        ]
+      },
+      {
+        id: "underground-river-a",
+        environment: "river",
+        question: "PLACEHOLDER: How do you prioritize when everything feels urgent?",
+        choices: [
+          { text: "A) Impact vs effort matrix", answer: "PLACEHOLDER ANSWER A for underground-river-a. Replace with real answer.", nextSceneId: "treasure-chamber" },
+          { text: "B) Align to strategic north star first", answer: "PLACEHOLDER ANSWER B for underground-river-a. Replace with real answer.", nextSceneId: "treasure-chamber" }
+        ]
+      },
+      {
+        id: "underground-river-b",
+        environment: "cave_lake",
+        question: "PLACEHOLDER: How do you prioritize when everything feels urgent?",
+        choices: [
+          { text: "A) Impact vs effort matrix", answer: "PLACEHOLDER ANSWER A for underground-river-b. Replace with real answer.", nextSceneId: "treasure-chamber" },
+          { text: "B) Align to strategic north star first", answer: "PLACEHOLDER ANSWER B for underground-river-b. Replace with real answer.", nextSceneId: "treasure-chamber" }
+        ]
+      },
+      // ── PATHS MERGE HERE ────────────────────────────────────────────────
+      {
+        id: "treasure-chamber",
+        environment: "treasure_room",
+        question: "PLACEHOLDER: What does a great engineering culture look like to you?",
+        choices: [
+          { text: "A) Psychological safety + blameless post-mortems", answer: "PLACEHOLDER ANSWER A for treasure-chamber. Replace with real answer.", nextSceneId: "cliffside" },
+          { text: "B) High autonomy with clear accountability", answer: "PLACEHOLDER ANSWER B for treasure-chamber. Replace with real answer.", nextSceneId: "cliffside" }
+        ]
+      },
+      {
+        id: "cliffside",
+        environment: "bridge",
+        question: "PLACEHOLDER: How do you grow engineers on your team?",
+        choices: [
+          { text: "A) Stretch assignments + regular 1:1s", answer: "PLACEHOLDER ANSWER A for cliffside. Replace with real answer.", nextSceneId: "volcano" },
+          { text: "B) Pair them with senior mentors on real work", answer: "PLACEHOLDER ANSWER B for cliffside. Replace with real answer.", nextSceneId: "volcano" }
+        ]
+      },
+      {
+        id: "volcano",
+        environment: "gears_room",
+        question: "PLACEHOLDER: Why do you want this role?",
+        choices: [
+          { text: "A) The scale of the problem excites me", answer: "PLACEHOLDER ANSWER A for volcano. Replace with real answer.", nextSceneId: "final" },
+          { text: "B) I want to build something that outlasts me", answer: "PLACEHOLDER ANSWER B for volcano. Replace with real answer.", nextSceneId: "final" }
+        ]
+      },
+      {
+        id: "final",
+        environment: "jungle",
+        question: null,
+        choices: []
+      }
+    ];
+    // ── END CONTENT SECTION ─────────────────────────────────────────────────
+  </script>
+
+  <script id="engine">
+    // ── CANVAS SETUP ─────────────────────────────────────────────────────────
+const canvas = document.getElementById('game-canvas');
+const ctx = canvas.getContext('2d');
+const W = 800, H = 500;
+
+// ── PIXEL ART HELPER (avatar only) ───────────────────────────────────────
+function px(x, y, w, h, color) {
+  ctx.fillStyle = color;
+  ctx.fillRect(x, y, w, h);
+}
+
+// ── BACKGROUND IMAGES ────────────────────────────────────────────────────
+const ENV_IMAGES = {
+  'jungle':        'img/jungle.png',
+  'jungle_path':   'img/jungle_path.png',
+  'temple':        'img/temple.jpg',
+  'cave_entrance': 'img/cave_entrance.png',
+  'cave':          'img/cave.png',
+  'river':         'img/river.png',
+  'cave_lake':     'img/cave_lake.jpg',
+  'treasure_room': 'img/treasure_room.jpg',
+  'bridge':        'img/bridge.png',
+  'gears_room':    'img/gears_room.jpg'
+};
+
+const $bgLayer = document.getElementById('bg-layer');
+
+function setBackground(envName) {
+  const src = ENV_IMAGES[envName] || ENV_IMAGES['jungle'];
+  $bgLayer.style.backgroundImage = `url('${src}')`;
+}
+
+// renderEnvironment is now a no-op on canvas — background handled by #bg-layer
+function renderEnvironment(envName) {}
+
+const GROUND_Y = 440;
+
+// ── AVATAR ────────────────────────────────────────────────────────────────
+const AVATAR = {
+  x: 100,
+  y: 440,
+  targetX: 100,
+  walkFrame: 0,
+  frameTimer: 0,
+  isWalking: false,
+  facingRight: true,
+  SCALE: 4,
+  WALK_SPEED: 3.9,
+  FRAME_RATE: 8
+};
+
+function drawAvatar(ax, ay, frame, facingRight) {
+  const s = AVATAR.SCALE;
+  // grid is 18 wide x 34 tall; anchor bottom-center at (ax, ay)
+  const GW = 18;
+  const GH = 34;
+  const ox = ax - Math.floor(GW / 2) * s;
+  const oy = ay - GH * s;
+
+  function apx(px, py, w, h, color) {
+    ctx.fillStyle = color;
+    const drawX = facingRight ? px : (GW - px - w);
+    ctx.fillRect(ox + drawX * s, oy + py * s, w * s, h * s);
+  }
+
+  // ── HAT ───────────────────────────────────────────────
+  apx(4, 0, 10, 3, '#3a2508');       // crown
+  apx(3, 1, 12, 1, '#5a3a18');       // crown highlight strip
+  apx(0, 3, 18, 2, '#3a2508');       // brim
+  apx(4, 4, 10, 1, '#2a1808');       // shadow where brim meets face
+
+  // ── FACE ──────────────────────────────────────────────
+  apx(5, 5, 8, 6, '#f4b870');        // face
+  apx(5, 5, 8, 2, '#d49850');        // shadow under hat
+  apx(6, 7, 2, 2, '#0a0600');        // left eye
+  apx(10, 7, 2, 2, '#0a0600');       // right eye
+  apx(6, 7, 1, 1, '#ffffff');        // left catch-light
+  apx(10, 7, 1, 1, '#ffffff');       // right catch-light
+
+  // ── NECK ──────────────────────────────────────────────
+  apx(7, 11, 4, 2, '#e4a860');
+
+  // ── JACKET / BODY ─────────────────────────────────────
+  apx(4, 13, 10, 8, '#6a4a28');      // jacket body
+  apx(4, 13, 1, 8, '#7a5a38');       // left highlight edge
+  apx(13, 13, 1, 8, '#5a3a18');      // right shadow edge
+  apx(7, 13, 4, 8, '#c09050');       // shirt flash center
+
+  // ── BELT ──────────────────────────────────────────────
+  apx(4, 21, 10, 2, '#2a1808');      // belt
+  apx(7, 21, 4, 2, '#b89000');       // buckle
+
+  // ── WHIP COIL (right hip, static) ─────────────────────
+  apx(14, 16, 2, 1, '#9a7a48');
+  apx(15, 17, 1, 2, '#7a5a28');
+
+  // ── ARMS ──────────────────────────────────────────────
+  // arm swing: frames 0&1 vs 2&3 alternate which arm leads
+  const leftArmDY  = (frame < 2) ?  1 : -1;
+  const rightArmDY = (frame < 2) ? -1 :  1;
+  apx(2, 13 + leftArmDY,  2, 9, '#6a4a28');   // left arm
+  apx(14, 13 + rightArmDY, 2, 9, '#6a4a28');  // right arm
+
+  // ── LEGS ──────────────────────────────────────────────
+  // frames 0&1: left leg extended, right compressed; 2&3: reversed
+  const leftLegH  = (frame < 2) ? 12 : 10;
+  const rightLegH = (frame < 2) ? 10 : 12;
+  // thigh highlight (top 1px slightly lighter)
+  apx(4, 23, 4, 1, '#7a5a38');
+  apx(10, 23, 4, 1, '#7a5a38');
+  // legs
+  apx(4, 24, 4, leftLegH - 3, '#4a3218');
+  apx(10, 24, 4, rightLegH - 3, '#4a3218');
+  // boots
+  const leftBootY  = 24 + (leftLegH - 3);
+  const rightBootY = 24 + (rightLegH - 3);
+  apx(3, leftBootY,  5, 3, '#1a1008');
+  apx(3, leftBootY,  2, 1, '#3a2818');
+  apx(10, rightBootY, 5, 3, '#1a1008');
+  apx(10, rightBootY, 2, 1, '#3a2818');
+}
+
+function updateAvatar() {
+  if (AVATAR.isWalking) {
+    const dx = AVATAR.targetX - AVATAR.x;
+    AVATAR.facingRight = dx >= 0;
+    if (Math.abs(dx) <= AVATAR.WALK_SPEED) {
+      AVATAR.x = AVATAR.targetX;
+      AVATAR.isWalking = false;
+      AVATAR.walkFrame = 0;
+    } else {
+      AVATAR.x += AVATAR.WALK_SPEED * (dx > 0 ? 1 : -1);
+      AVATAR.frameTimer++;
+      if (AVATAR.frameTimer >= AVATAR.FRAME_RATE) {
+        AVATAR.frameTimer = 0;
+        AVATAR.walkFrame = (AVATAR.walkFrame + 1) % 4;
+      }
+    }
+  }
+}
+
+function walkAvatarTo(targetX, onDone) {
+  AVATAR.targetX = targetX;
+  AVATAR.isWalking = true;
+  AVATAR._onDone = onDone;
+}
+
+// ── GAME STATE ────────────────────────────────────────────────────────────
+const STATE = {
+  phase: 'title',
+  currentSceneId: 'start',
+  pendingNextId: null,
+  _fadeAlpha: 0,
+  _fadingToId: null
+};
+
+function getScene(id) {
+  return SCENES.find(s => s.id === id) || SCENES[0];
+}
+
+// ── UI HELPERS ────────────────────────────────────────────────────────────
+const $questionPanel = document.getElementById('question-panel');
+const $questionText  = document.getElementById('question-text');
+const $choicesContainer = document.getElementById('choices-container');
+const $answerPanel   = document.getElementById('answer-panel');
+const $answerText    = document.getElementById('answer-text');
+const $continueBtn   = document.getElementById('continue-btn');
+const $titleScreen   = document.getElementById('title-screen');
+const $startBtn      = document.getElementById('start-btn');
+const $sceneLabel    = document.getElementById('scene-label');
+$questionPanel.style.display = 'none';
+$answerPanel.style.display = 'none';
+
+function animateOut(el, onDone) {
+  el.classList.remove('panel-enter');
+  el.classList.add('panel-exit');
+  el.addEventListener('animationend', function h() {
+    el.removeEventListener('animationend', h);
+    el.classList.remove('panel-exit');
+    el.style.display = 'none';
+    if (onDone) onDone();
+  });
+}
+
+function animateIn(el, flex) {
+  el.style.display = flex ? 'flex' : 'block';
+  el.classList.remove('panel-exit');
+  el.classList.add('panel-enter');
+}
+
+function showPanel(which) {
+  const showQ = which === 'question';
+  const showA = which === 'answer';
+
+  if (!showQ && $questionPanel.style.display !== 'none') {
+    animateOut($questionPanel);
+  } else if (!showQ) {
+    $questionPanel.style.display = 'none';
+  }
+
+  if (!showA && $answerPanel.style.display !== 'none') {
+    animateOut($answerPanel);
+  } else if (!showA) {
+    $answerPanel.style.display = 'none';
+  }
+
+  if (showQ) animateIn($questionPanel);
+  if (showA) animateIn($answerPanel);
+}
+
+function loadScene(sceneId) {
+  STATE.phase = 'fading';
+  STATE._fadeAlpha = 0;
+  STATE._fadingToId = sceneId;
+}
+
+function _doLoadScene(sceneId) {
+  const scene = getScene(sceneId);
+  STATE.currentSceneId = sceneId;
+  $sceneLabel.textContent = sceneId;
+  AVATAR.x = 100;
+  AVATAR.targetX = 100;
+  AVATAR.isWalking = false;
+  AVATAR._onDone = null;
+  AVATAR.y = scene.groundY ?? GROUND_Y;
+  setBackground(scene.environment);
+
+  if (!scene.question) {
+    showPanel(null);
+    fadeOverlayIn($finalPanel);
+    STATE.phase = 'final';
+    return;
+  }
+  $finalPanel.style.display = 'none';
+
+  STATE.phase = 'question';
+  $questionText.textContent = scene.question;
+  $choicesContainer.innerHTML = '';
+  scene.choices.forEach((choice) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.textContent = choice.text;
+    btn.addEventListener('click', () => handleChoice(choice));
+    $choicesContainer.appendChild(btn);
+  });
+  showPanel('question');
+}
+
+function handleChoice(choice) {
+  STATE.phase = 'answer';
+  STATE.pendingNextId = choice.nextSceneId;
+
+  $answerText.textContent = choice.answer;
+  $continueBtn.style.visibility = 'visible';
+  showPanel('answer');
+
+  walkAvatarTo(950, null);
+}
+
+const $finalPanel = document.getElementById('final-panel');
+const $playAgainBtn = document.getElementById('play-again-btn');
+const $fadeOverlay = document.getElementById('fade-overlay');
+
+// ── MAIN RENDER LOOP ──────────────────────────────────────────────────────
+function gameLoop() {
+  ctx.clearRect(0, 0, W, H);
+
+  if (STATE.phase === 'title') {
+    renderEnvironment('jungle');
+    drawAvatar(200, 440, Math.floor(Date.now() / 150) % 4, true);
+    requestAnimationFrame(gameLoop);
+    return;
+  }
+
+  if (STATE.phase === 'fading') {
+    drawAvatar(AVATAR.x, AVATAR.y, 0, AVATAR.facingRight);
+    STATE._fadeAlpha = Math.min(STATE._fadeAlpha + 0.06, 1);
+    $fadeOverlay.style.opacity = STATE._fadeAlpha;
+    if (STATE._fadeAlpha >= 1) {
+      _doLoadScene(STATE._fadingToId);
+      $fadeOverlay.style.opacity = 0;
+    }
+    requestAnimationFrame(gameLoop);
+    return;
+  }
+
+  const scene = getScene(STATE.currentSceneId);
+
+  if (STATE.phase !== 'title') {
+    renderEnvironment(scene.environment);
+    const frame = AVATAR.isWalking ? AVATAR.walkFrame : 0;
+    const bounce = STATE.phase === 'question' ? Math.round(Math.sin(Date.now() / 220) * 1) : 0;
+    drawAvatar(AVATAR.x, AVATAR.y + bounce, frame, AVATAR.facingRight);
+    if (AVATAR.isWalking) {
+      updateAvatar();
+      if (!AVATAR.isWalking && AVATAR._onDone) {
+        const cb = AVATAR._onDone;
+        AVATAR._onDone = null;
+        cb();
+      }
+    }
+    if (STATE.phase !== 'final') {
+      const totalSteps = 10;
+      const completedIds = ['start','temple-a','temple-b','cave-a','cave-b',
+        'underground-river-a','underground-river-b','treasure-chamber','cliffside','volcano'];
+      const currentIdx = completedIds.indexOf(STATE.currentSceneId);
+      for (let i = 0; i < totalSteps; i++) {
+        const dotX = W / 2 - (totalSteps * 14) / 2 + i * 14;
+        const dotY = H - 14;
+        ctx.fillStyle = i <= currentIdx ? '#f0c040' : 'rgba(255,255,255,0.2)';
+        ctx.beginPath(); ctx.arc(dotX, dotY, 5, 0, Math.PI * 2); ctx.fill();
+      }
+    }
+  }
+
+  requestAnimationFrame(gameLoop);
+}
+
+// ── EVENT HANDLERS ────────────────────────────────────────────────────────
+const $introScreen  = document.getElementById('intro-screen');
+const $introBeginBtn = document.getElementById('intro-begin-btn');
+
+function fadeOverlayOut(el, onDone) {
+  el.classList.remove('overlay-enter');
+  el.classList.add('overlay-exit');
+  el.addEventListener('animationend', function h() {
+    el.removeEventListener('animationend', h);
+    el.classList.remove('overlay-exit');
+    el.style.display = 'none';
+    if (onDone) onDone();
+  });
+}
+
+function fadeOverlayIn(el) {
+  el.style.display = 'flex';
+  el.classList.remove('overlay-exit');
+  el.classList.add('overlay-enter');
+}
+
+$startBtn.addEventListener('click', () => {
+  fadeOverlayOut($titleScreen, () => fadeOverlayIn($introScreen));
+});
+
+$introBeginBtn.addEventListener('click', () => {
+  fadeOverlayOut($introScreen, () => loadScene('start'));
+});
+
+$continueBtn.addEventListener('click', () => {
+  if (STATE.pendingNextId) {
+    const nextId = STATE.pendingNextId;
+    STATE.pendingNextId = null;
+    $continueBtn.style.visibility = 'visible';
+    loadScene(nextId);
+  }
+});
+
+$playAgainBtn.addEventListener('click', () => {
+  fadeOverlayOut($finalPanel, () => {
+    $continueBtn.style.visibility = 'visible';
+    loadScene('start');
+  });
+});
+
+document.getElementById('exit-btn').addEventListener('click', () => {
+  fadeOverlayOut($finalPanel, () => {
+    setBackground('jungle');
+    $titleScreen.style.display = 'flex';
+    fadeOverlayIn($titleScreen);
+    STATE.phase = 'title';
+    STATE.currentSceneId = 'start';
+  });
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && STATE.phase === 'answer') {
+    $continueBtn.click();
+  }
+});
+
+// ── BOOT ──────────────────────────────────────────────────────────────────
+setBackground('jungle');
+gameLoop();
+  </script>
+</body>
+</html>
