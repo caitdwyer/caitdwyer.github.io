@@ -240,18 +240,18 @@
     }
     #exit-btn:hover { border-color: #fff; color: #fff; }
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-6px); }
+      from { opacity: 0; transform: translateY(-28px); }
       to   { opacity: 1; transform: translateY(0); }
     }
     @keyframes fadeOut {
       from { opacity: 1; transform: translateY(0); }
-      to   { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 0; transform: translateY(-28px); }
     }
     .panel-enter {
-      animation: fadeIn 0.25s ease forwards;
+      animation: fadeIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     }
     .panel-exit {
-      animation: fadeOut 0.2s ease forwards;
+      animation: fadeOut 0.25s cubic-bezier(0.55, 0, 0.45, 1) forwards;
     }
     @keyframes overlayFadeIn {
       from { opacity: 0; }
@@ -626,20 +626,28 @@ function showPanel(which) {
   const showQ = which === 'question';
   const showA = which === 'answer';
 
+  function doEnter() {
+    if (showQ) animateIn($questionPanel);
+    if (showA) animateIn($answerPanel);
+  }
+
+  let exiting = false;
+
   if (!showQ && $questionPanel.style.display !== 'none') {
-    animateOut($questionPanel);
+    exiting = true;
+    animateOut($questionPanel, doEnter);
   } else if (!showQ) {
     $questionPanel.style.display = 'none';
   }
 
   if (!showA && $answerPanel.style.display !== 'none') {
-    animateOut($answerPanel);
+    exiting = true;
+    animateOut($answerPanel, doEnter);
   } else if (!showA) {
     $answerPanel.style.display = 'none';
   }
 
-  if (showQ) animateIn($questionPanel);
-  if (showA) animateIn($answerPanel);
+  if (!exiting) doEnter();
 }
 
 function loadScene(sceneId) {
@@ -701,7 +709,9 @@ function gameLoop() {
 
   if (STATE.phase === 'title') {
     renderEnvironment('jungle');
-    drawAvatar(200, 440, Math.floor(Date.now() / 150) % 4, true);
+    if ($introScreen.style.display !== 'flex') {
+      drawAvatar(200, 440, Math.floor(Date.now() / 150) % 4, true);
+    }
     requestAnimationFrame(gameLoop);
     return;
   }
