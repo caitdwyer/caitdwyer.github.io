@@ -267,20 +267,13 @@
     .overlay-exit {
       animation: overlayFadeOut 0.2s ease forwards;
     }
-    #scene-label {
-      position: absolute;
-      top: 12px;
-      right: 16px;
-      color: rgba(255,255,255,0.4);
-      font-size: 12px;
-    }
   </style>
 </head>
 <body>
   <div id="game-container">
     <div id="bg-layer"></div>
-    <div id="fade-overlay"></div>
     <canvas id="game-canvas" width="800" height="500"></canvas>
+    <div id="fade-overlay"></div>
     <div id="title-screen">
       <h1>THE ADVENTURE</h1>
       <p>An interactive interview experience</p>
@@ -316,7 +309,6 @@
         <button id="exit-btn">Exit the Game</button>
       </div>
     </div>
-    <div id="scene-label"></div>
   </div>
 
   <script id="scene-data">
@@ -324,106 +316,101 @@
     const SCENES = [
       {
         id: "start",
-        environment: "jungle_path",
-        question: "PLACEHOLDER: What's your leadership philosophy?",
+        environment: "jungle",
+        question: "The jungle is dense and twisty, what do you want to know about my motivation for this expedition?",
+        groundY: 390,
         choices: [
           {
-            text: "A) Servant leadership — I clear blockers for my team",
-            answer: "PLACEHOLDER ANSWER A: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Replace this with your real answer about servant leadership.",
-            nextSceneId: "temple-a"
+            text: "Why would you leave Product for this leadership role?",
+            answer: "Product Management taught me how to identify deep user pain points and build scalable solutions. However, I want to leave the 'what we build' silo to focus on 'how we deliver, scale, and empower the people doing it.' This role is the perfect intersection of my strategic product background and my passion for operational leadership.",
+            nextSceneId: "cave"
           },
           {
-            text: "B) Lead by example — I stay hands-on with the work",
-            answer: "PLACEHOLDER ANSWER B: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Replace this with your real answer about leading by example.",
-            nextSceneId: "temple-b"
+            text: "Why choose this specific role right now?",
+            answer: "This role isn't just a position; it's a critical lever for the business. I am drawn to the specific challenges this team is facing, and my unique background means I can step in on Day 1 to unblock technical hurdles, realign priorities, and champion the team across the broader organization.",
+            nextSceneId: "cave"
           }
         ]
       },
+     // {
+      //  id: "temple-a",
+      //  environment: "jungle_path",
+      //  groundY: 440,
+      //  question: "PLACEHOLDER: How do you handle a missed deadline?",
+      //  choices: [
+      //    { text: "A) Re-scope immediately with stakeholders", answer: "PLACEHOLDER ANSWER A for temple-a choice 1. Replace with real answer.", nextSceneId: "cave" },
+     //     { text: "B) Identify root cause before escalating", answer: "PLACEHOLDER ANSWER B for temple-a choice 2. Replace with real answer.", nextSceneId: "cave" }
+      //  ]
+     // },
       {
-        id: "temple-a",
-        environment: "temple",
-        question: "PLACEHOLDER: How do you handle a missed deadline?",
+        id: "cave",
+        environment: "cave_entrance",
+        groundY: 390,
+        question: "A massive cave looms before you, dark and damp.",
         choices: [
-          { text: "A) Re-scope immediately with stakeholders", answer: "PLACEHOLDER ANSWER A for temple-a choice 1. Replace with real answer.", nextSceneId: "cave-a" },
-          { text: "B) Identify root cause before escalating", answer: "PLACEHOLDER ANSWER B for temple-a choice 2. Replace with real answer.", nextSceneId: "cave-b" }
-        ]
-      },
-      {
-        id: "temple-b",
-        environment: "temple",
-        question: "PLACEHOLDER: How do you handle a missed deadline?",
-        choices: [
-          { text: "A) Re-scope immediately with stakeholders", answer: "PLACEHOLDER ANSWER A for temple-b choice 1. Replace with real answer.", nextSceneId: "cave-a" },
-          { text: "B) Identify root cause before escalating", answer: "PLACEHOLDER ANSWER B for temple-b choice 2. Replace with real answer.", nextSceneId: "cave-b" }
+          { text: "You've been away from this Salesforce portfolio area for a while. Are you still technical enough?", answer: "Technology evolves, but core architecture patterns and first-principles thinking don't. While I may need to re-familiarize myself with the latest API updates, my foundational knowledge of the Salesforce ecosystem is rock-solid. I don't need a ramp-up period to understand your architecture—I just need to map it to current business goals.", nextSceneId: "cave-a" },
+          { text: "How will you effectively lead a highly specialized team without being the deepest expert?", answer: "Great technical leaders don't need to be the best coders in the room; they need to be the best bullshit-detectors and roadblock-clearers. My job is to ask the right forcing questions, empower your domain experts, and translate their technical needs into business value that executives understand.", nextSceneId: "cave-b" }
         ]
       },
       {
         id: "cave-a",
-        environment: "cave_entrance",
-        question: "PLACEHOLDER: Describe a time you drove cross-functional alignment.",
+        environment: "cave",
+        groundY: 400,
+        question: "A vast underground cavern with glowing crystals. Deep, subterranean energy hums in the air.",
         choices: [
-          { text: "A) Structured kick-offs and shared OKRs", answer: "PLACEHOLDER ANSWER A for cave-a. Replace with real answer.", nextSceneId: "underground-river-a" },
-          { text: "B) Informal relationship-building first", answer: "PLACEHOLDER ANSWER B for cave-a. Replace with real answer.", nextSceneId: "underground-river-b" }
+          { text: "What do you think the actual future of Data and AI looks like?", answer: "The future of AI isn't just about larger LLMs; it's about context and data gravity. AI is only as good as the foundational data feeding it. The future belongs to seamless data harmonization (like Data Cloud) feeding autonomous agents that can execute workflows, not just chat with users.", nextSceneId: "treasure-chamber" },
+          { text: "How do we avoid the hype and deliver real AI value to our clients?", answer: "To avoid the hype, we must anchor AI to concrete business outcomes. I push teams to focus on 'Time to Value.' We shouldn't build AI for the sake of novelty; we build it to reduce clicks, automate mundane tasks, and surface predictive insights that humans miss.", nextSceneId: "treasure-chamber" }
         ]
       },
       {
         id: "cave-b",
-        environment: "cave",
-        question: "PLACEHOLDER: Describe a time you drove cross-functional alignment.",
-        choices: [
-          { text: "A) Structured kick-offs and shared OKRs", answer: "PLACEHOLDER ANSWER A for cave-b. Replace with real answer.", nextSceneId: "underground-river-a" },
-          { text: "B) Informal relationship-building first", answer: "PLACEHOLDER ANSWER B for cave-b. Replace with real answer.", nextSceneId: "underground-river-b" }
-        ]
-      },
-      {
-        id: "underground-river-a",
-        environment: "river",
-        question: "PLACEHOLDER: How do you prioritize when everything feels urgent?",
-        choices: [
-          { text: "A) Impact vs effort matrix", answer: "PLACEHOLDER ANSWER A for underground-river-a. Replace with real answer.", nextSceneId: "treasure-chamber" },
-          { text: "B) Align to strategic north star first", answer: "PLACEHOLDER ANSWER B for underground-river-a. Replace with real answer.", nextSceneId: "treasure-chamber" }
-        ]
-      },
-      {
-        id: "underground-river-b",
         environment: "cave_lake",
-        question: "PLACEHOLDER: How do you prioritize when everything feels urgent?",
+        groundY: 410,
+        question: "A glittering lake streches thoughout the cave, lit by the crystals lining its shores.",
         choices: [
-          { text: "A) Impact vs effort matrix", answer: "PLACEHOLDER ANSWER A for underground-river-b. Replace with real answer.", nextSceneId: "treasure-chamber" },
-          { text: "B) Align to strategic north star first", answer: "PLACEHOLDER ANSWER B for underground-river-b. Replace with real answer.", nextSceneId: "treasure-chamber" }
+          { text: "What do you think the actual future of Data and AI looks like?", answer: "The future of AI isn't just about larger LLMs; it's about context and data gravity. AI is only as good as the foundational data feeding it. The future belongs to seamless data harmonization (like Data Cloud) feeding autonomous agents that can execute workflows, not just chat with users.", nextSceneId: "treasure-chamber" },
+          { text: "How do we avoid the hype and deliver real AI value to our clients?", answer: "To avoid the hype, we must anchor AI to concrete business outcomes. I push teams to focus on 'Time to Value.' We shouldn't build AI for the sake of novelty; we build it to reduce clicks, automate mundane tasks, and surface predictive insights that humans miss.", nextSceneId: "treasure-chamber" }
         ]
       },
       // ── PATHS MERGE HERE ────────────────────────────────────────────────
       {
         id: "treasure-chamber",
-        environment: "treasure_room",
-        question: "PLACEHOLDER: What does a great engineering culture look like to you?",
+        environment: "temple",
+        groundY: 440,
+        question: "You enter a crumbling temple, dimly lit by torchlight.",
         choices: [
-          { text: "A) Psychological safety + blameless post-mortems", answer: "PLACEHOLDER ANSWER A for treasure-chamber. Replace with real answer.", nextSceneId: "cliffside" },
-          { text: "B) High autonomy with clear accountability", answer: "PLACEHOLDER ANSWER B for treasure-chamber. Replace with real answer.", nextSceneId: "cliffside" }
+          { text: "What are your core values, and how do you actually live them day-to-day?", answer: "My core values are Transparency, Accountability, and Iterative Progress. I live them by over-communicating the 'why' behind decisions, owning my mistakes loudly so the team feels safe to fail and learn, and prioritizing shipping good solutions today over perfect solutions next month.", nextSceneId: "cliffside" },
+          { text: "What would your first 30, 60, and 90 days look like on this team?", answer: "Days 1-30: Listen and learn—1:1s with stakeholders, absorbing the technical debt and team dynamics. Days 31-60: Identify 'quick wins' to optimize workflows and establish trust. Days 61-90: Execute on strategic realignments and set measurable KPIs for the upcoming quarters.", nextSceneId: "cliffside" }
         ]
       },
       {
         id: "cliffside",
         environment: "bridge",
-        question: "PLACEHOLDER: How do you grow engineers on your team?",
+        groundY: 440,
+        question: "A precarious bridge stretching over a deep chasm. Teamwork is required to cross.",
         choices: [
-          { text: "A) Stretch assignments + regular 1:1s", answer: "PLACEHOLDER ANSWER A for cliffside. Replace with real answer.", nextSceneId: "volcano" },
-          { text: "B) Pair them with senior mentors on real work", answer: "PLACEHOLDER ANSWER B for cliffside. Replace with real answer.", nextSceneId: "volcano" }
+          { text: "What do you look for when hiring and growing a team?", 
+          answer: "I look for three things: high cognitive horsepower, low ego, and a bias for action. I grow teams by mapping individuals' personal career goals to business milestones, ensuring that as the company wins, the individual explicitly wins and levels up their career, too.", 
+          nextSceneId: "volcano" },
+          { text: "How do you resolve interpersonal conflict and handle people you don't naturally click with?", 
+          answer: "I decouple the person from the problem. Conflict usually stems from misaligned incentives or unspoken anxieties. I address tension directly and privately, shifting the conversation from 'Who is right?' to 'What is the right outcome for our customer?' Empathy and radical candor are my core tools here.", 
+          nextSceneId: "volcano" }
         ]
       },
       {
         id: "volcano",
         environment: "gears_room",
-        question: "PLACEHOLDER: Why do you want this role?",
+        groundY: 420,
+        question: "A secret room appears with whirring gears and mystical symbols.",
         choices: [
-          { text: "A) The scale of the problem excites me", answer: "PLACEHOLDER ANSWER A for volcano. Replace with real answer.", nextSceneId: "final" },
-          { text: "B) I want to build something that outlasts me", answer: "PLACEHOLDER ANSWER B for volcano. Replace with real answer.", nextSceneId: "final" }
+          { text: "How do these acquisitions alter our product strategy and team focus?", answer: "Acquisitions like Regrello, Qualified, and Momentum represent a massive acceleration toward collaborative, real-time workflows and automated pipeline generation. Our strategy must shift from 'standalone tools' to a 'unified ecosystem' where these capabilities feel native, maximizing customer retention.", nextSceneId: "final" },
+          { text: "How do you handle the technical and cultural friction of integrating new platforms?", answer: "Integration friction is inevitable. Culturally, I focus on honoring what the acquired teams built while aligning them to our macro mission. Technically, we prioritize unboxing their APIs and securing data pipelines early, ensuring a unified user experience takes precedence over hasty backend merges.", nextSceneId: "final" }
         ]
       },
       {
         id: "final",
-        environment: "jungle",
+        groundY: 440,
+        environment: "treasure_room",
         question: null,
         choices: []
       }
@@ -601,7 +588,6 @@ const $answerText    = document.getElementById('answer-text');
 const $continueBtn   = document.getElementById('continue-btn');
 const $titleScreen   = document.getElementById('title-screen');
 const $startBtn      = document.getElementById('start-btn');
-const $sceneLabel    = document.getElementById('scene-label');
 $questionPanel.style.display = 'none';
 $answerPanel.style.display = 'none';
 
@@ -659,7 +645,6 @@ function loadScene(sceneId) {
 function _doLoadScene(sceneId) {
   const scene = getScene(sceneId);
   STATE.currentSceneId = sceneId;
-  $sceneLabel.textContent = sceneId;
   AVATAR.x = 100;
   AVATAR.targetX = 100;
   AVATAR.isWalking = false;
@@ -708,10 +693,6 @@ function gameLoop() {
   ctx.clearRect(0, 0, W, H);
 
   if (STATE.phase === 'title') {
-    renderEnvironment('jungle');
-    if ($introScreen.style.display !== 'flex') {
-      drawAvatar(200, 440, Math.floor(Date.now() / 150) % 4, true);
-    }
     requestAnimationFrame(gameLoop);
     return;
   }
@@ -741,18 +722,6 @@ function gameLoop() {
         const cb = AVATAR._onDone;
         AVATAR._onDone = null;
         cb();
-      }
-    }
-    if (STATE.phase !== 'final') {
-      const totalSteps = 10;
-      const completedIds = ['start','temple-a','temple-b','cave-a','cave-b',
-        'underground-river-a','underground-river-b','treasure-chamber','cliffside','volcano'];
-      const currentIdx = completedIds.indexOf(STATE.currentSceneId);
-      for (let i = 0; i < totalSteps; i++) {
-        const dotX = W / 2 - (totalSteps * 14) / 2 + i * 14;
-        const dotY = H - 14;
-        ctx.fillStyle = i <= currentIdx ? '#f0c040' : 'rgba(255,255,255,0.2)';
-        ctx.beginPath(); ctx.arc(dotX, dotY, 5, 0, Math.PI * 2); ctx.fill();
       }
     }
   }
